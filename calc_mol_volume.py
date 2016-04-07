@@ -1,5 +1,13 @@
 import pybel
 
+def annotate_sdf_volume(insdf, outsdf):
+
+    output = pybel.Outputfile("sdf", outsdf, overwrite=True);
+    for mol in pybel.readfile("sdf", insdf):
+        mol.data["estimated_volume"] = estimate_volume(mol);
+        output.write(mol);
+    output.close()
+
 def estimate_volume(obmol):
     """
     Calculate estimated volume of a compound.
