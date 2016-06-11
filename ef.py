@@ -32,11 +32,11 @@ def ef(values, labels, ratio, definition=(0,1)):
     decimal, integer = math.modf(index)
     integer = int(integer)
 
-    partial_df = df[:integer]
+    labels = df[:integer].label
     if decimal != 0:
-        ratioN = ( float(sum(partial_df.label)) + df.loc[integer+1,"label"]*decimal ) / index
+        ratioN = ( float(sum(labels)) + df.loc[integer+1,"label"]*decimal ) / index
     else:
-        ratioN = float(sum(partial_df.label)) / index
+        ratioN = float(sum(labels)) / index
     ef = ratioN / ratio1;
     return ef
 
