@@ -52,6 +52,7 @@ def test(cond, statement_dict):
 
 if __name__ == '__main__':
     case1 = {
+        "title" : "Normal case 1",
         "values": [1, 2, 3, 4, 5],
         "labels": [0, 0, 1, 0, 1],
         "ratio" : 0.2,
@@ -61,6 +62,7 @@ if __name__ == '__main__':
 
 
     case2 = {
+        "title"      : "Normal case 2 (with definition)",
         "values"     : [1, 2, 3, 4, 5],
         "labels"     : [0, 0, 1, 0, 1],
         "ratio"      : 0.2,
@@ -70,6 +72,7 @@ if __name__ == '__main__':
     test(ef(case2["values"], case2["labels"], case2["ratio"], definition=case2["definition"]) == case2["result"], case2)
 
     case3 = {
+        "title"      : "The case existing same values",
         "values"     : [1, 2, 4, 4, 5],
         "labels"     : [0, 0, 1, 0, 1],
         "ratio"      : 0.4,
@@ -79,6 +82,7 @@ if __name__ == '__main__':
     
 
     case4 = {
+        "title"      : "The case len(data)*ratio isn't integer number",
         "values"     : [1, 2, 4, 4, 5],
         "labels"     : [0, 0, 1, 0, 1],
         "ratio"      : 0.3,
@@ -86,10 +90,20 @@ if __name__ == '__main__':
     }
     test(ef(case4["values"], case4["labels"], case4["ratio"]) == case4["result"], case4)
     
-    case4 = {
+    case5 = {
+        "title"      : "Edge case: ratio = 1",
         "values"     : [1, 2, 4, 4, 5],
         "labels"     : [0, 0, 1, 0, 1],
         "ratio"      : 1.0,
         "result"     : (2.0/5) / (2.0/5),
     }
-    test(ef(case4["values"], case4["labels"], case4["ratio"]) == case4["result"], case4)
+    test(ef(case5["values"], case5["labels"], case5["ratio"]) == case5["result"], case5)
+
+    case6 = {
+        "title"      : "Error case: ratio > 1",
+        "values"     : [1, 2, 4, 4, 5],
+        "labels"     : [0, 0, 1, 0, 1],
+        "ratio"      : 1.01,
+        "result"     : None,
+    }
+    test(ef(case6["values"], case6["labels"], case6["ratio"]) == case6["result"], case6)
