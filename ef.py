@@ -34,14 +34,17 @@ def ef(values, labels, ratio, definition=(0,1)):
     partial_df = df[:index]
     par_ratio = float(sum(partial_df.label)) / index
     ef = par_ratio / ratio1;
-    print ef
     return ef
 
 def test(cond, statement_dict):
+    OKGREEN = '\033[92m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+
     if cond:
-        print("A test is passed.")
+        print(OKGREEN+"A test is passed."+ENDC)
     else:
-        print("A test is failed.")
+        print(FAIL+"A test is failed."+ENDC)
     for key, value in statement_dict.iteritems():
         print(key, value)
 
@@ -50,7 +53,7 @@ if __name__ == '__main__':
         "values": [1, 2, 3, 4, 5],
         "labels": [0, 0, 1, 0, 1],
         "ratio" : 0.2,
-        "result": 2.5,
+        "result": (1.0/1) / (2.0/5),
     }
     test(ef(case1["values"], case1["labels"], case1["ratio"]) == case1["result"], case1)
 
@@ -60,9 +63,15 @@ if __name__ == '__main__':
     case2["result"] = 0
     test(ef(case2["values"], case2["labels"], case2["ratio"], definition=case2["definition"]) == case2["result"], case2)
 
-    #TODO the result of case3 is wrong.
     case3 = case2
-    case3["values"] = [1,2,4,5,5]
+    case3["values"] = [1,2,4,4,5]
     case3["ratio"] = 0.4
-    case3["result"] = (1.0/2) / (2.0/5)
+    case3["result"] = (0.5/2) / (3.0/5)
     test(ef(case3["values"], case3["labels"], case3["ratio"], definition=case3["definition"]) == case3["result"], case3)
+    
+
+    case4 = case3
+    case4["ratio"] = 0.3
+    case3["result"] = (0.25/1.5) / (3.0/5)
+    test(ef(case3["values"], case3["labels"], case3["ratio"], definition=case3["definition"]) == case3["result"], case3)
+    
