@@ -22,7 +22,6 @@ def ef(values, labels, ratio, definition=(0,1)):
     labels = [definition.index(x) for x in labels]
 
     ratio1 = np.sum(labels, dtype=float)/len(labels)
-
     df = pd.DataFrame.from_dict({"value": values, "label": labels})
     df = df.sort_values("value", ascending=False).reset_index();
     del df["index"]
@@ -30,10 +29,13 @@ def ef(values, labels, ratio, definition=(0,1)):
     meaned_label_df = df.groupby("value").mean().reset_index();
     df = pd.merge(df[["value"]], meaned_label_df, on="value", how="left")
 
-    index = int(len(labels)*ratio)
-    partial_df = df[:index]
-    par_ratio = float(sum(partial_df.label)) / index
+    index = len(labels)*ratio
+    div_index = (int(index), index-int(index))
+    partial_df = df[:div_index[0]]
+    par_ratio = ( float(sum(partial_df.label)) + df.loc[div_index[0]+1,"label"]*div_index[1] ) / index
     ef = par_ratio / ratio1;
+    print df
+    print("ef = %f"%ef)
     return ef
 
 def test(cond, statement_dict):
