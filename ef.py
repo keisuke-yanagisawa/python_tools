@@ -21,22 +21,28 @@ def ef(values, labels, ratio, definition=(0,1)):
     if ratio > 1:
         print("ratio %f is invalid. ratio must be no more than 1." % ratio)
         return None
+
+    # making real-numbered labels
     labels = [definition.index(x) for x in labels]
-    ratio1 = float(sum(labels))/len(labels)
     df = pd.DataFrame.from_dict({"value": values, "label": labels}).sort_values("value", ascending=False).reset_index();
     labels = pd.merge(df[["value"]], df.groupby("value").mean().reset_index(), on="value", how="left").label
 
-    index = len(labels)*ratio
-    decimal, integer = math.modf(index)
+    # calculating original positive concentration 
+    ratio1 = float(sum(labels))/len(labels)
+
+    # calculating screened positive concentration
+    count = len(labels)*ratio
+    decimal, integer = math.modf(count)
     integer = int(integer)
 
     labelsN = labels[:integer]
     if decimal != 0:
-        ratioN = ( float(sum(labelsN)) + labels[integer+1]*decimal ) / index
+        ratioN = ( float(sum(labelsN)) + labels[integer+1]*decimal ) / count
     else:
-        ratioN = float(sum(labelsN)) / index
-    ef = ratioN / ratio1;
-    return ef
+        ratioN = float(sum(labelsN)) / count
+
+    # calculating EF value
+    return ratioN / ratio1
 
 def test(cond, statement_dict):
     OKGREEN = '\033[92m'
