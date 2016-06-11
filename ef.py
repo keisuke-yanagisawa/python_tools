@@ -1,7 +1,6 @@
 # coding: UTF-8 
 
 import pandas as pd
-import numpy as np
 
 def ef(values, labels, ratio, definition=(0,1)):
     """
@@ -21,13 +20,13 @@ def ef(values, labels, ratio, definition=(0,1)):
         return None
     labels = [definition.index(x) for x in labels]
 
-    ratio1 = np.sum(labels, dtype=float)/len(labels)
+    ratio1 = float(sum(labels))/len(labels)
     df = pd.DataFrame.from_dict({"value": values, "label": labels})
     df = df.sort_values("value", ascending=False).reset_index();
     del df["index"]
 
-    meaned_label_df = df.groupby("value").mean().reset_index();
-    df = pd.merge(df[["value"]], meaned_label_df, on="value", how="left")
+    label_meaned = df.groupby("value").mean().reset_index();
+    df = pd.merge(df[["value"]], label_meaned, on="value", how="left")
 
     index = len(labels)*ratio
     div_index = (int(index), index-int(index))
