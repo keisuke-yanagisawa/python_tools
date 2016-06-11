@@ -36,10 +36,10 @@ def ef(values, labels, ratio, definition=(0,1)):
     integer = int(integer)
 
     labelsN = labels[:integer]
+    num_posN = float(sum(labelsN))
     if decimal != 0:
-        ratioN = ( float(sum(labelsN)) + labels[integer+1]*decimal ) / count
-    else:
-        ratioN = float(sum(labelsN)) / count
+        num_posN += labels[integer+1]*decimal # add remainder
+    ratioN = num_posN / count
 
     # calculating EF value
     return ratioN / ratio1
@@ -49,12 +49,16 @@ def test(cond, statement_dict):
     FAIL = '\033[91m'
     ENDC = '\033[0m'
 
+    print(OKGREEN+"start test"+ENDC)
+
+    # showing test condition
+    for key, value in statement_dict.iteritems():
+        print(key, value)
+
     if cond:
         print(OKGREEN+"A test is passed."+ENDC)
     else:
         print(FAIL+"A test is failed."+ENDC)
-    for key, value in statement_dict.iteritems():
-        print(key, value)
 
 if __name__ == '__main__':
     case1 = {
