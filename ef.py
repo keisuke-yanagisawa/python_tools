@@ -18,25 +18,23 @@ def ef(values, labels, ratio, definition=(0,1)):
         print("invalid labels are detected.")
         print([x for x in labels if (not x in definition)])
         return None
+    if ratio > 1:
+        print("ratio %f is invalid. ratio must be no more than 1." % ratio)
+        return None
     labels = [definition.index(x) for x in labels]
-
     ratio1 = float(sum(labels))/len(labels)
-    df = pd.DataFrame.from_dict({"value": values, "label": labels})
-    df = df.sort_values("value", ascending=False).reset_index();
-    del df["index"]
-
-    label_meaned = df.groupby("value").mean().reset_index();
-    df = pd.merge(df[["value"]], label_meaned, on="value", how="left")
+    df = pd.DataFrame.from_dict({"value": values, "label": labels}).sort_values("value", ascending=False).reset_index();
+    labels = pd.merge(df[["value"]], df.groupby("value").mean().reset_index(), on="value", how="left").label
 
     index = len(labels)*ratio
     decimal, integer = math.modf(index)
     integer = int(integer)
 
-    labels = df[:integer].label
+    labelsN = labels[:integer]
     if decimal != 0:
-        ratioN = ( float(sum(labels)) + df.loc[integer+1,"label"]*decimal ) / index
+        ratioN = ( float(sum(labelsN)) + labels[integer+1]*decimal ) / index
     else:
-        ratioN = float(sum(labels)) / index
+        ratioN = float(sum(labelsN)) / index
     ef = ratioN / ratio1;
     return ef
 
