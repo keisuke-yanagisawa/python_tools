@@ -1,7 +1,7 @@
 # coding: UTF-8 
 
 import pandas as pd
-
+import math
 def ef(values, labels, ratio, definition=(0,1)):
     """
     INPUT
@@ -29,12 +29,15 @@ def ef(values, labels, ratio, definition=(0,1)):
     df = pd.merge(df[["value"]], label_meaned, on="value", how="left")
 
     index = len(labels)*ratio
-    div_index = (int(index), index-int(index))
-    partial_df = df[:div_index[0]]
-    par_ratio = ( float(sum(partial_df.label)) + df.loc[div_index[0]+1,"label"]*div_index[1] ) / index
-    ef = par_ratio / ratio1;
-    print df
-    print("ef = %f"%ef)
+    decimal, integer = math.modf(index)
+    integer = int(integer)
+
+    partial_df = df[:integer]
+    if decimal != 0:
+        ratioN = ( float(sum(partial_df.label)) + df.loc[integer+1,"label"]*decimal ) / index
+    else:
+        ratioN = float(sum(partial_df.label)) / index
+    ef = ratioN / ratio1;
     return ef
 
 def test(cond, statement_dict):
@@ -59,20 +62,36 @@ if __name__ == '__main__':
     test(ef(case1["values"], case1["labels"], case1["ratio"]) == case1["result"], case1)
 
 
-    case2 = case1
-    case2["definition"] = (1,0)
-    case2["result"] = 0
+    case2 = {
+        "values"     : [1, 2, 3, 4, 5],
+        "labels"     : [0, 0, 1, 0, 1],
+        "ratio"      : 0.2,
+        "result"     : (0.0/1) / (2.0/5),
+        "definition" : (1,0),
+    }
     test(ef(case2["values"], case2["labels"], case2["ratio"], definition=case2["definition"]) == case2["result"], case2)
 
-    case3 = case2
-    case3["values"] = [1,2,4,4,5]
-    case3["ratio"] = 0.4
-    case3["result"] = (0.5/2) / (3.0/5)
-    test(ef(case3["values"], case3["labels"], case3["ratio"], definition=case3["definition"]) == case3["result"], case3)
+    case3 = {
+        "values"     : [1, 2, 4, 4, 5],
+        "labels"     : [0, 0, 1, 0, 1],
+        "ratio"      : 0.4,
+        "result"     : (1.5/2) / (2.0/5),
+    }
+    test(ef(case3["values"], case3["labels"], case3["ratio"]) == case3["result"], case3)
     
 
-    case4 = case3
-    case4["ratio"] = 0.3
-    case3["result"] = (0.25/1.5) / (3.0/5)
-    test(ef(case3["values"], case3["labels"], case3["ratio"], definition=case3["definition"]) == case3["result"], case3)
+    case4 = {
+        "values"     : [1, 2, 4, 4, 5],
+        "labels"     : [0, 0, 1, 0, 1],
+        "ratio"      : 0.3,
+        "result"     : (1.25/1.5) / (2.0/5),
+    }
+    test(ef(case4["values"], case4["labels"], case4["ratio"]) == case4["result"], case4)
     
+    case4 = {
+        "values"     : [1, 2, 4, 4, 5],
+        "labels"     : [0, 0, 1, 0, 1],
+        "ratio"      : 1.0,
+        "result"     : (2.0/5) / (2.0/5),
+    }
+    test(ef(case4["values"], case4["labels"], case4["ratio"]) == case4["result"], case4)
