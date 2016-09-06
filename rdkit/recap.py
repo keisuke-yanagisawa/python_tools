@@ -13,15 +13,17 @@ def react_all(mol, reaction):
     return now;
     
 def __react_1step(mol, reaction):
+    Chem.GetSSSR(mol);
     temp = reaction.RunReactants((mol,))
     if(len(temp) == 0):
         return (mol,)
     else:
         return temp[0];
 
-smarts=AllChem.ReactionFromSmarts("[C:1][C:2]>>[C:1].[C:2]")
-hoge = AllChem.MolFromSmiles("CCCC")
-
+smarts=AllChem.ReactionFromSmarts("[N:1][C&!R:2](=[O:3])[N:4]>>[N:1].[C&!R:2](=[O:3]).[N:4]")
+hoge = AllChem.MolFromSmiles("C(=O)NCC1C(=O)ONCOC1CC(=O)OCCNC(=O)N1CCCC1")
+img = Draw.MolToImage(hoge);
+img.save("hoge.png")
 print [Chem.MolToSmiles(x) for x in react_all(hoge, smarts)]
 #
 #while True:
