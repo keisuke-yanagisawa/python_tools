@@ -1,21 +1,29 @@
 from commands import getoutput as gop
+import os.path
 import gzip
 
-def size(file_name, compressed=False):
+def __isCompressed(file_name):
+    _, ext = os.path.splitext(file_name)
+    return ext == ".gz"
+
+def size(file_name):
     """
     Counting the number of compounds in a sdf file.
     """
     
     command = "grep \$\$\$\$ | wc -l"
-    if(compressed):
+    if(__isCompressed(file_name)):
         file_read = "gzip -cd %s" % file_name 
     else:
         file_read = "cat %s" % file_name
 
-    return gop(file_read+" | "+command)
+    return int(gop(file_read+" | "+command))
 
-def cpdsGenerator(file_name, compressed=False):
-    if(compressed):
+def cpdsGenerator(file_name):
+    """
+    yielding a compound data string.
+    """
+    if(__isCompressed(file_name)):
         File = gzip.open(file_name)
     else:
         File = open(file_name)
@@ -26,6 +34,7 @@ def cpdsGenerator(file_name, compressed=False):
         if(line.startswith("$$$$")):
             yield string
             string = ""
+    File.close()
 
 
 
