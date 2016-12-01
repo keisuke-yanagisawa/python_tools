@@ -36,9 +36,33 @@ def cpdsGenerator(file_name):
             string = ""
     File.close()
 
+def getCpds(file_name, indices=None):
+    """
+    Getting compound string list, based on given indices list 
+    Indices list is uniqued list, which has 0-origin indices.
+    If indices is None, all compounds will listed.
+    """
 
+    if(indices is None):
+        return list(cpdsGenerator(sys.argv[1]))
+
+    #else:
+    gen = cpdsGenerator(file_name)
+    ret = []
+    indices = sorted(indices)
+    count = 0
+    for index in indices:
+        while(count < index):
+            next(gen)
+            count+=1
+        ret.append(next(gen))
+        count+=1
+    gen.close()
+    return ret
+    
 
 if __name__ == "__main__":
     import sys
     print size(sys.argv[1])
     print len(list(cpdsGenerator(sys.argv[1])))
+    print getCpds(sys.argv[1], indices=[3])
