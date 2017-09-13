@@ -11,9 +11,11 @@ def separateMol2Blocks(string):
     mol2blocks[-1] = mol2blocks[-1][:-1]
     return [mol2block+'\n' for mol2block in mol2blocks]
 
-def MOL2BlockSupplier(filename):
+def Mol2BlockSupplier(filename):
     with open(filename) as fin:
-        ForwardMol2BlockSupplier(fin)
+        suppl = ForwardMol2BlockSupplier(fin)
+        for mol in suppl:
+            yield mol
 
 def ForwardMol2BlockSupplier(fileobj):
     mol2block = fileobj.readline()
