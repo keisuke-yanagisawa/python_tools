@@ -13,12 +13,14 @@ if __name__ == "__main__":
     N = args.N
     
     string = ""
-    count = 0;
+    mol_count = 0;
+    file_count = 0;
     for line in open(file):
         if(line.startswith("@<TRIPOS>MOLECULE")):
-            count += 1
-            if(count % N == 0):
-                output = filename+"_"+str(count/N)+".mol2"
+            mol_count += 1
+            if(mol_count % N == 0 and mol_count > 1):
+                file_count += 1
+                output = filename+"_"+str(file_count)+".mol2"
                 file = open(output, "w");
                 file.write(string);
                 file.close();
@@ -27,9 +29,10 @@ if __name__ == "__main__":
                 string = "";
         string += line;
             
-    if(count%N != 0):
-        file = open(filename+"_"+str(count/N + 1)+".mol2", "w");
+    if(string != ""):
+        file_count += 1
+        file = open(filename+"_"+str(file_count)+".mol2", "w");
         file.write(string);
         file.close();
 
-    print("%d compounds are divided into %d files." % (count, count/N+1 if count%N!=0 else count/N))
+    print("%d compounds are divided into %d files." % (mol_count, file_count))
