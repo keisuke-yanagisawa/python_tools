@@ -13,13 +13,15 @@ if __name__ == "__main__":
     N = args.N
     
     string = ""
-    count = 0;
+    mol_count = 0;
+    file_count = 0;
     for line in open(file):
-        string += line;
+        string += line
         if(line.startswith("$$$$")):
-            count += 1
-            if(count % N == 0):
-                output = filename+"_"+str(count/N)+".sdf"
+            mol_count += 1
+            if(mol_count % N == 0):
+                file_count += 1
+                output = filename+"_"+str(file_count)+".sdf"
                 file = open(output, "w");
                 file.write(string);
                 file.close();
@@ -27,9 +29,10 @@ if __name__ == "__main__":
                     print("output : %s" % output)
                 string = "";
             
-    if(count%N != 0):
-        file = open(filename+"_"+str(count/N + 1)+".sdf", "w");
+    if(string != ""):
+        file_count += 1
+        file = open(filename+"_"+str(file_count)+".sdf", "w");
         file.write(string);
         file.close();
 
-    print("%d compounds are divided into %d files." % (count, count/N+1 if count%N!=0 else count/N))
+    print("%d compounds are divided into %d files." % (mol_count, file_count))
