@@ -1,7 +1,4 @@
-# -*- coding: utf-8 -*-
-
-
-def read_config(configfile):
+def read(configfile):
     config = {}
     with open(configfile) as fin:
         for line in fin:
@@ -17,3 +14,9 @@ def read_config(configfile):
             else:
                 config[aData[0]] = aData[1]
     return config
+
+
+def write(path, config_dict):
+    with open(path, "w") as fout:
+        for item in config_dict.items():
+            fout.write("%s %s\n" % item)
