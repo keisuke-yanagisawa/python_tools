@@ -4,20 +4,26 @@ import argparse
 
 
 def detect_compound(fin, field):
-    use_title = (field == None)
+    if field:
+        field = field.split(",")  # for multicolumn
+        name = [""]*len(field)
+    else:
+        name = [""]
     st_offset = fin.tell()
 
     line = fin.readline()
-    if use_title:
-        name = line.strip()
+    if not field:
+        name[0] = line.strip()
     while line:
-        if (not use_title) and line.startswith("> <%s>" % field):
-            name = fin.readline().strip()
+        if field:
+            for i, key in enumerate(field):
+                if line.startswith("> <%s>" % key):
+                    name[i] = fin.readline().strip()
         elif line.startswith("$$$$"):
             break
         line = fin.readline()
     ed_offset = fin.tell()
-    return name, st_offset, ed_offset
+    return "".join(name), st_offset, ed_offset
 
 
 def test_EOF(f):
@@ -36,7 +42,8 @@ if __name__ == "__main__":
     parser.add_argument("--field",
                         help="""field name for reordering.
                         TITLE will be used if it is not set.
-                        the field MUST be unique.""")
+                        the field MUST be unique.
+                        Two or more fields can be set like 'hoge,fuga'.""")
     args = parser.parse_args()
 
     compound_dict = {}
