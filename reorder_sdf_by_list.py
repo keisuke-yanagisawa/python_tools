@@ -23,7 +23,7 @@ def detect_compound(fin, field):
             break
         line = fin.readline()
     ed_offset = fin.tell()
-    return "".join(name), st_offset, ed_offset
+    return ",".join(name), st_offset, ed_offset
 
 
 def test_EOF(f):
