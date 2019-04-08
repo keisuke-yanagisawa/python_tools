@@ -2,6 +2,7 @@
 
 import argparse
 
+debug=False
 
 def detect_compound(fin, field):
     if field:
@@ -15,11 +16,14 @@ def detect_compound(fin, field):
     if not field:
         name[0] = line.strip()
     while line:
+        if debug:
+            print(line)
+            
         if field:
             for i, key in enumerate(field):
                 if line.startswith("> <%s>" % key):
                     name[i] = fin.readline().strip()
-        elif line.startswith("$$$$"):
+        if line.startswith("$$$$"):
             break
         line = fin.readline()
     ed_offset = fin.tell()
@@ -54,7 +58,8 @@ if __name__ == "__main__":
                 break
             name, st_offset, ed_offset = detect_compound(fin, args.field)
             compound_dict[name] = (st_offset, ed_offset)
-            print(name, compound_dict[name])
+            if debug:
+                print(name, compound_dict[name])
 
     # 2. generate output
     with open(args.isdf) as fin:
